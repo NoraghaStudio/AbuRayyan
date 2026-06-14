@@ -153,7 +153,7 @@ body {
     justify-content: center;
     padding: 120px 0 80px;
     overflow: hidden;
-    background: url('Dealership.png') center/cover no-repeat;
+    background: url('Dealership.webp') center/cover no-repeat;
 }
 
 .hero-bg-overlay {
