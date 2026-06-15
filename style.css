@@ -689,3 +689,325 @@ h1 {
         justify-content: center;
     }
 }
+
+/* ==================== SECONDARY BUTTON ==================== */
+.cta-secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    box-shadow: none;
+}
+.cta-secondary:hover {
+    background: rgba(200,164,86,0.08);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+/* ==================== TICKER ==================== */
+.ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    background: rgba(200,164,86,0.1);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    display: flex;
+    white-space: nowrap;
+}
+.ticker {
+    display: flex;
+    animation: tickerMoveRTL 20s linear infinite;
+}
+.ticker-item {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--gold-light);
+    padding: 0 40px;
+}
+@keyframes tickerMoveRTL {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(50%); }
+}
+
+/* ==================== SERVICES ==================== */
+.services-section {
+    padding: 80px 0;
+    background: var(--bg-dark);
+}
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+.service-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    text-align: center;
+    transition: var(--transition);
+}
+.service-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--gold);
+    box-shadow: var(--shadow);
+}
+.service-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    background: rgba(200,164,86,0.1);
+    color: var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.service-card h3 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+.service-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* ==================== REPORTS HUB ==================== */
+.reports-section {
+    padding: 80px 0;
+    background: var(--bg-surface);
+}
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+.report-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: var(--transition);
+}
+.report-card:hover {
+    border-color: rgba(200,164,86,0.3);
+    transform: translateY(-3px);
+}
+.report-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+.report-logo {
+    height: 24px;
+    width: auto;
+    object-fit: contain;
+}
+.report-header h3 {
+    font-size: 1.1rem;
+    flex-grow: 1;
+}
+.flag-badge {
+    font-size: 1.4rem;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.report-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* ==================== PRICING ==================== */
+.pricing-section {
+    padding: 80px 0;
+    background: var(--bg-dark);
+}
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+.pricing-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px 32px;
+    position: relative;
+    transition: var(--transition);
+}
+.pricing-card.vip-card {
+    background: linear-gradient(180deg, rgba(200,164,86,0.08) 0%, rgba(19,19,26,1) 100%);
+    border-color: rgba(200,164,86,0.4);
+    transform: scale(1.02);
+}
+.pricing-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 6px 20px;
+    border-radius: 100px;
+}
+.pricing-header {
+    text-align: center;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+}
+.pricing-header h3 {
+    font-size: 1.2rem;
+    color: var(--gold-light);
+    margin-bottom: 16px;
+}
+.price {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 12px;
+}
+.price span {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+.pricing-header p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+.pricing-features {
+    list-style: none;
+}
+.pricing-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+.pricing-features li::before {
+    content: '✓';
+    color: var(--gold);
+    font-weight: bold;
+}
+
+/* ==================== TRUST ==================== */
+.trust-section {
+    padding: 80px 0;
+    background: var(--bg-surface);
+}
+.oath-box {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 48px;
+    padding: 40px;
+    background: rgba(200,164,86,0.05);
+    border-left: 4px solid var(--gold);
+    border-right: 4px solid var(--gold);
+    border-radius: 16px;
+}
+.oath-box h2 {
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    color: var(--gold-light);
+    line-height: 1.6;
+    font-family: Georgia, serif;
+    font-style: italic;
+}
+.trust-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+}
+.golden-tip {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(135deg, rgba(200,164,86,0.1) 0%, transparent 100%);
+    border: 1px solid rgba(200,164,86,0.2);
+    border-radius: var(--radius);
+    padding: 24px 32px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.tip-icon {
+    font-size: 2.5rem;
+}
+.tip-content h4 {
+    color: var(--gold);
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+.tip-content p {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+/* ==================== FOOTER CONTACTS ==================== */
+.footer-contacts {
+    padding-bottom: 40px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+}
+.contact-box {
+    text-align: center;
+}
+.contact-box h3 {
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+}
+.contact-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* ==================== FLOATING WHATSAPP ==================== */
+.floating-whatsapp {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: #25D366;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    z-index: 999;
+    transition: var(--transition);
+}
+.floating-whatsapp:hover {
+    transform: scale(1.1);
+    background: #20bd5a;
+}
+@media (max-width: 768px) {
+    html[dir="rtl"] .floating-whatsapp {
+        right: auto;
+        left: 20px;
+        bottom: 20px;
+    }
+    .pricing-card.vip-card {
+        transform: scale(1);
+    }
+}
