@@ -802,11 +802,14 @@ h1 {
     flex-wrap: wrap;
 }
 .report-logo {
-    height: 32px;
+    height: 34px;
     width: auto;
     object-fit: contain;
-    filter: brightness(0) invert(1);
+    background: #ffffff;
+    padding: 6px 12px;
+    border-radius: 8px;
     max-width: 120px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 .report-header h3 {
     font-size: 1.1rem;
