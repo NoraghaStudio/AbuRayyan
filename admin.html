@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم أبو ريان</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #121418;
+            --bg-surface: #1f2125;
+            --bg-hover: #2a2d33;
+            --gold: #c8a456;
+            --gold-hover: #b3914a;
+            --text-primary: #f5f5f5;
+            --text-secondary: #a0a4ab;
+            --border: #333;
+            --danger: #ff4d4d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-surface);
+            border-left: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .nav-item {
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(200, 164, 86, 0.1);
+            color: var(--gold);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-right: 280px;
+            padding: 3rem 4rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            background: var(--gold);
+            color: var(--bg-dark);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: var(--gold-hover);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #e60000;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Forms & Inputs */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .delete-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .delete-overlay {
+            opacity: 1;
+        }
+
+        .upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        .upload-area:hover {
+            border-color: var(--gold);
+        }
+
+        /* Reviews List */
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .review-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .review-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--gold);
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-site-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 500;
+            border: 1px solid var(--gold);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .view-site-link:hover {
+            background: var(--gold);
+            color: var(--bg-dark);
+        }
+
+        /* Login Overlay */
+        #loginOverlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-dark);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .login-box {
+            background: var(--bg-surface);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div id="loginOverlay">
+        <div class="login-box">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" style="margin-bottom: 1rem;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <h2 style="color: var(--gold); margin-bottom: 1rem;">لوحة التحكم</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">الرجاء إدخال كلمة المرور للوصول</p>
+            <input type="password" id="adminPassword" class="form-control" placeholder="كلمة المرور..." style="margin-bottom: 1rem; text-align: center;" onkeypress="if(event.key === 'Enter') checkPassword()">
+            <button class="btn" style="width: 100%;" onclick="checkPassword()">تسجيل الدخول</button>
+            <p id="loginError" style="color: var(--danger); margin-top: 1rem; display: none;">كلمة المرور غير صحيحة!</p>
+        </div>
+    </div>
+
+    <aside class="sidebar">
+        <div class="logo">لوحة التحكم</div>
+        <div class="nav-item active" onclick="switchTab('gallery')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            معرض الصور
+        </div>
+        <div class="nav-item" onclick="switchTab('reviews')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1-2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            إدارة التقييمات
+        </div>
+
+        <div style="margin-top: auto;">
+            <a href="index.html" class="view-site-link" target="_blank">عرض الموقع المباشر ↗</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        
+        <!-- Gallery Section -->
+        <section id="gallery" class="section active">
+            <div class="header">
+                <h1>معرض الصور</h1>
+            </div>
+            
+            <label class="upload-area">
+                <input type="file" id="photoUpload" multiple accept="image/*" style="display: none;" onchange="handleFileUpload(event)">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" style="margin-bottom: 1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">اضغط هنا لاختيار صور ورفعها</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">سيتم ضغط الصور تلقائياً لتسريع الموقع</p>
+            </label>
+
+            <div class="gallery-grid" id="galleryContainer">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section id="reviews" class="section">
+            <div class="header">
+                <h1>إدارة التقييمات</h1>
+                <p style="color: var(--text-secondary);">يمكنك تعديل أو حذف التقييمات المعروضة في الموقع.</p>
+            </div>
+
+            <div class="reviews-list" id="reviewsContainer">
+                <p style="color: var(--text-secondary);">جاري التحميل...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="reviews-data.js"></script>
+    <script>
+        // --- Authentication ---
+        const ADMIN_PASSWORD = "8f$WzZ8G5Ox\\"; // يمكنك تغيير كلمة المرور من هنا
+
+        function checkPassword() {
+            const errorElem = document.getElementById('loginError');
+            const lockoutUntil = parseInt(localStorage.getItem('adminLockoutUntil') || '0');
+            const now = Date.now();
+
+            if (lockoutUntil > now) {
+                errorElem.textContent = "تم قفل الحساب مؤقتاً لكثرة المحاولات الخاطئة.";
+                errorElem.style.display = 'block';
+                return;
+            }
+
+            // Clear old lockout
+            if (lockoutUntil && lockoutUntil <= now) {
+                localStorage.removeItem('adminLoginAttempts');
+                localStorage.removeItem('adminLockoutUntil');
+            }
+
+            const input = document.getElementById('adminPassword').value;
+            let attempts = parseInt(localStorage.getItem('adminLoginAttempts') || '0');
+
+            if (input === ADMIN_PASSWORD) {
+                localStorage.removeItem('adminLoginAttempts');
+                sessionStorage.setItem('isAdminAuth', 'true');
+                document.getElementById('loginOverlay').style.display = 'none';
+            } else {
+                attempts++;
+                localStorage.setItem('adminLoginAttempts', attempts);
+                
+                if (attempts >= 3) {
+                    localStorage.setItem('adminLockoutUntil', (now + 3600000).toString()); // 1 hour
+                    errorElem.textContent = "تم قفل الحساب مؤقتاً لكثرة المحاولات الخاطئة.";
+                } else {
+                    errorElem.textContent = "كلمة المرور غير صحيحة!";
+                }
+                errorElem.style.display = 'block';
+            }
+        }
+
+        // Hide overlay if already authenticated in this session
+        if (sessionStorage.getItem('isAdminAuth') === 'true') {
+            document.getElementById('loginOverlay').style.display = 'none';
+        }
+
+        // Run check on load to update UI if already locked out
+        window.addEventListener('DOMContentLoaded', () => {
+            const lockoutUntil = parseInt(localStorage.getItem('adminLockoutUntil') || '0');
+            if (lockoutUntil > Date.now()) {
+                const errorElem = document.getElementById('loginError');
+                errorElem.textContent = "تم قفل الحساب مؤقتاً لكثرة المحاولات الخاطئة.";
+                errorElem.style.display = 'block';
+                document.getElementById('adminPassword').disabled = true;
+            }
+        });
+
+        // Utilities
+        function generateId(name, text) {
+            try {
+                return btoa(unescape(encodeURIComponent(name + text))).substring(0, 15);
+            } catch(e) {
+                return 'id_' + Math.random().toString(36).substr(2, 9);
+            }
+        }
+
+        // Navigation
+        function switchTab(tabId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- Gallery Logic ---
+        function loadGallery() {
+            const defaultPhotos = [];
+            for(let i=1; i<=18; i++) {
+                defaultPhotos.push(`images/أعمالنا${i}.webp`);
+            }
+            const localPhotos = JSON.parse(localStorage.getItem('admin_photos') || '[]');
+            const deletedPhotos = JSON.parse(localStorage.getItem('deleted_photos') || '[]');
+            
+            const allPhotos = [...localPhotos, ...defaultPhotos].filter(p => !deletedPhotos.includes(p));
+
+            const container = document.getElementById('galleryContainer');
+            container.innerHTML = '';
+            
+            allPhotos.forEach((photo) => {
+                container.innerHTML += `
+                    <div class="gallery-item">
+                        <img src="${photo}" alt="Gallery Image">
+                        <div class="delete-overlay">
+                            <button class="btn btn-danger" onclick="deletePhoto('${photo}')">حذف</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            if(!files.length) return;
+
+            let photos = JSON.parse(localStorage.getItem('admin_photos') || '[]');
+            let processed = 0;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const max = 800; // Compress size
+                        
+                        if (width > height) {
+                            if (width > max) { height *= max / width; width = max; }
+                        } else {
+                            if (height > max) { width *= max / height; height = max; }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        const dataUrl = canvas.toDataURL('image/webp', 0.6); // Compress to webp 60%
+                        photos.unshift(dataUrl);
+                        
+                        processed++;
+                        if(processed === files.length) {
+                            localStorage.setItem('admin_photos', JSON.stringify(photos));
+                            loadGallery();
+                            alert('تم رفع الصور بنجاح!');
+                        }
+                    }
+                    img.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function deletePhoto(photoUrl) {
+            if(!confirm('هل أنت متأكد من حذف هذه الصورة؟')) return;
+            
+            let localPhotos = JSON.parse(localStorage.getItem('admin_photos') || '[]');
+            if(localPhotos.includes(photoUrl)) {
+                localPhotos = localPhotos.filter(p => p !== photoUrl);
+                localStorage.setItem('admin_photos', JSON.stringify(localPhotos));
+            } else {
+                let deletedPhotos = JSON.parse(localStorage.getItem('deleted_photos') || '[]');
+                if(!deletedPhotos.includes(photoUrl)) deletedPhotos.push(photoUrl);
+                localStorage.setItem('deleted_photos', JSON.stringify(deletedPhotos));
+            }
+            loadGallery();
+        }
+
+        // --- Reviews Logic ---
+        let allReviews = [];
+
+        async function loadReviews() {
+            try {
+                let defaultReviews = [];
+                if (typeof reviews !== 'undefined') {
+                    defaultReviews = JSON.parse(JSON.stringify(reviews));
+                }
+                
+                const localReviews = JSON.parse(localStorage.getItem('site_reviews') || '[]');
+                const deletedReviews = JSON.parse(localStorage.getItem('deleted_reviews') || '[]');
+                const editedReviews = JSON.parse(localStorage.getItem('edited_reviews') || '{}');
+
+                allReviews = [];
+
+                // Assign IDs to default reviews
+                defaultReviews.forEach(r => {
+                    r.id = generateId(r.name, r.text);
+                    r.isLocal = false;
+                });
+
+                // Merge lists
+                localReviews.forEach(lr => { lr.isLocal = true; allReviews.push(lr); });
+                defaultReviews.forEach(dr => {
+                    if(!allReviews.find(r => r.id === dr.id)) allReviews.push(dr);
+                });
+
+                // Apply edits and deletions
+                const visibleReviews = allReviews.filter(r => !deletedReviews.includes(r.id)).map(r => {
+                    if(editedReviews[r.id]) {
+                        return { ...r, name: editedReviews[r.id].name, text: editedReviews[r.id].text };
+                    }
+                    return r;
+                });
+
+                renderReviews(visibleReviews);
+            } catch(e) {
+                console.error("Error loading reviews", e);
+                document.getElementById('reviewsContainer').innerHTML = '<p style="color: red;">حدث خطأ أثناء تحميل التقييمات.</p>';
+            }
+        }
+
+        function renderReviews(reviews) {
+            const container = document.getElementById('reviewsContainer');
+            container.innerHTML = '';
+
+            reviews.forEach(r => {
+                container.innerHTML += `
+                    <div class="review-card" id="rev-card-${r.id}">
+                        <div class="review-header">
+                            <div>
+                                <input type="text" class="form-control review-name" id="name-${r.id}" value="${r.name}" style="background:transparent; border:none; border-bottom:1px solid var(--border); padding:0.5rem; margin-bottom:0.5rem; color:var(--gold);">
+                                <div style="color:var(--text-secondary); font-size:0.85rem; margin-bottom: 0.5rem;">${r.date} ${r.isLocal ? '(تقييم زائر)' : ''}</div>
+                            </div>
+                            <div class="review-actions">
+                                <button class="btn" style="padding: 0.5rem 1rem;" onclick="saveReview('${r.id}')">تحديث</button>
+                                <button class="btn btn-danger" style="padding: 0.5rem 1rem;" onclick="deleteReview('${r.id}', ${r.isLocal})">حذف</button>
+                            </div>
+                        </div>
+                        <textarea class="form-control" id="text-${r.id}" style="min-height:80px;">${r.text}</textarea>
+                    </div>
+                `;
+            });
+        }
+
+        function saveReview(id) {
+            const newName = document.getElementById(`name-${id}`).value;
+            const newText = document.getElementById(`text-${id}`).value;
+
+            // Check if it's a local review
+            let localReviews = JSON.parse(localStorage.getItem('site_reviews') || '[]');
+            const localIndex = localReviews.findIndex(r => r.id === id);
+
+            if (localIndex !== -1) {
+                localReviews[localIndex].name = newName;
+                localReviews[localIndex].text = newText;
+                localStorage.setItem('site_reviews', JSON.stringify(localReviews));
+            } else {
+                // It's a default review, save to edited_reviews
+                let editedReviews = JSON.parse(localStorage.getItem('edited_reviews') || '{}');
+                editedReviews[id] = { name: newName, text: newText };
+                localStorage.setItem('edited_reviews', JSON.stringify(editedReviews));
+            }
+            alert('تم تحديث التقييم.');
+        }
+
+        function deleteReview(id, isLocal) {
+            if(!confirm('هل أنت متأكد من حذف هذا التقييم؟')) return;
+
+            if (isLocal) {
+                let localReviews = JSON.parse(localStorage.getItem('site_reviews') || '[]');
+                localReviews = localReviews.filter(r => r.id !== id);
+                localStorage.setItem('site_reviews', JSON.stringify(localReviews));
+            } else {
+                let deletedReviews = JSON.parse(localStorage.getItem('deleted_reviews') || '[]');
+                if(!deletedReviews.includes(id)) deletedReviews.push(id);
+                localStorage.setItem('deleted_reviews', JSON.stringify(deletedReviews));
+            }
+            
+            document.getElementById(`rev-card-${id}`).remove();
+        }
+
+        // Init
+        window.onload = () => {
+            loadGallery();
+            loadReviews();
+        };
+
+        // Listen for storage changes from other tabs to update instantly
+        window.addEventListener('storage', (e) => {
+            if (['site_reviews', 'deleted_reviews', 'edited_reviews', 'admin_photos', 'deleted_photos'].includes(e.key)) {
+                loadGallery();
+                loadReviews();
+            }
+        });
+
+    </script>
+</body>
+</html>
