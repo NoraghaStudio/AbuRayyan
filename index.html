@@ -19,6 +19,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -208,25 +209,27 @@
                 <h2>صور من أعمالنا</h2>
                 <p class="section-desc">جانب من عمليات الفحص الدقيقة التي نقوم بها يومياً</p>
             </div>
-            <div class="gallery-grid">
-                <img src="images/أعمالنا1.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا2.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا3.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا4.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا5.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا6.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا7.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا8.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا9.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا10.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا11.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا12.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا13.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا14.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا15.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا16.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا17.jpeg" alt="أعمالنا" loading="lazy">
-                <img src="images/أعمالنا18.jpeg" alt="أعمالنا" loading="lazy">
+            <div class="swiper gallery-swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"><img src="images/أعمالنا1.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا2.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا3.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا4.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا5.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا6.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا7.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا8.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا9.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا10.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا11.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا12.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا13.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا14.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا15.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا16.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا17.jpeg" alt="أعمالنا" loading="lazy"></div>
+                    <div class="swiper-slide"><img src="images/أعمالنا18.jpeg" alt="أعمالنا" loading="lazy"></div>
+                </div>
             </div>
         </div>
     </section>
@@ -2418,6 +2421,21 @@
         // Header scroll effect
         window.addEventListener('scroll', () => {
             document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        const gallerySwiper = new Swiper('.gallery-swiper', {
+            loop: true,
+            slidesPerView: 1.2,
+            spaceBetween: 16,
+            centeredSlides: true,
+            dir: 'rtl',
+            breakpoints: {
+                480: { slidesPerView: 1.5 },
+                768: { slidesPerView: 2.5 },
+                1024: { slidesPerView: 3.5 }
+            }
         });
     </script>
 </body>
