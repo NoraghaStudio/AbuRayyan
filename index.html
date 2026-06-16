@@ -2573,7 +2573,7 @@
             
             <form id="reviewForm" onsubmit="submitReview(event)">
                 <div style="margin-bottom: 16px;">
-                    <label style="display: block; margin-bottom: 8px; color: var(--text-primary);">الاسم (إلزامي):</label>
+                    <label style="display: block; margin-bottom: 8px; color: var(--text-primary);">(الاسم أو الكنية/اللقب):</label>
                     <input type="text" id="revName" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-dark); color: var(--text-primary); font-family: inherit; transition: 0.2s;">
                 </div>
                 <div style="margin-bottom: 24px;">
@@ -2607,8 +2607,8 @@
                 </div>
 
                 <div style="margin-bottom: 24px;">
-                    <label style="display: block; margin-bottom: 8px; color: var(--text-primary);">كتابة إضافية (اختياري):</label>
-                    <textarea id="revComment" rows="3" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-dark); color: var(--text-primary); font-family: inherit; resize: vertical; transition: 0.2s;"></textarea>
+                    <label style="display: block; margin-bottom: 8px; color: var(--text-primary);">التقييم (إلزامي):</label>
+                    <textarea id="revComment" required rows="3" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-dark); color: var(--text-primary); font-family: inherit; resize: vertical; transition: 0.2s;"></textarea>
                 </div>
 
                 <button type="submit" class="cta-btn cta-whatsapp" style="width: 100%; justify-content: center; font-size: 1.1rem;">إرسال التقييم</button>
@@ -2656,9 +2656,10 @@
                 id: 'rev_' + Date.now(),
                 name: name,
                 date: yyyy + '/' + mm + '/' + dd,
-                text: comment ? comment : "تم التقييم بنجاح، شكراً لتعاملكم.",
+                text: comment,
                 rating: "positive",
-                isHaraj: false
+                isHaraj: false,
+                phone: phone || ''
             };
 
             if(typeof reviews !== 'undefined' && typeof renderReviews === 'function') {
@@ -2719,6 +2720,19 @@
                     });
 
                     const filteredReviews = reviews.filter(r => !deletedReviews.includes(r.id));
+                    
+                    const order = JSON.parse(localStorage.getItem('reviews_order') || '[]');
+                    if (order.length > 0) {
+                        filteredReviews.sort((a, b) => {
+                            const indexA = order.indexOf(a.id);
+                            const indexB = order.indexOf(b.id);
+                            if (indexA === -1 && indexB === -1) return 0;
+                            if (indexA === -1) return -1;
+                            if (indexB === -1) return 1;
+                            return indexA - indexB;
+                        });
+                    }
+
                     reviews.length = 0;
                     reviews.push(...filteredReviews);
                     
@@ -2766,7 +2780,7 @@
         
         // Listen for storage changes from other tabs to update instantly
         window.addEventListener('storage', (e) => {
-            if (['site_reviews', 'deleted_reviews', 'edited_reviews', 'admin_photos', 'deleted_photos'].includes(e.key)) {
+            if (['site_reviews', 'deleted_reviews', 'edited_reviews', 'admin_photos', 'deleted_photos', 'reviews_order'].includes(e.key)) {
                 applyDynamicOverrides();
             }
         });

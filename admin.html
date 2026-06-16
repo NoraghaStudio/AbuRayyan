@@ -604,10 +604,26 @@
                 // Apply edits and deletions
                 const visibleReviews = allReviews.filter(r => !deletedReviews.includes(r.id)).map(r => {
                     if(editedReviews[r.id]) {
-                        return { ...r, name: editedReviews[r.id].name, text: editedReviews[r.id].text };
+                        return { ...r, name: editedReviews[r.id].name, text: editedReviews[r.id].text, isHaraj: editedReviews[r.id].isHaraj };
                     }
                     return r;
                 });
+
+                // Apply custom order
+                const order = JSON.parse(localStorage.getItem('reviews_order') || '[]');
+                if (order.length > 0) {
+                    visibleReviews.sort((a, b) => {
+                        const indexA = order.indexOf(a.id);
+                        const indexB = order.indexOf(b.id);
+                        if (indexA === -1 && indexB === -1) return 0;
+                        if (indexA === -1) return -1;
+                        if (indexB === -1) return 1;
+                        return indexA - indexB;
+                    });
+                }
+                
+                // Update the global reference used by drag/drop
+                allReviews = visibleReviews;
 
                 renderReviews(visibleReviews);
             } catch(e) {
@@ -622,11 +638,15 @@
 
             reviews.forEach(r => {
                 container.innerHTML += `
-                    <div class="review-card" id="rev-card-${r.id}">
+                    <div class="review-card" id="rev-card-${r.id}" draggable="true" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
                         <div class="review-header">
+                            <div style="cursor: grab; margin-left: 1rem; color: var(--text-secondary);" title="اسحب لترتيب التقييم">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                            </div>
                             <div style="flex:1;">
                                 <input type="text" class="form-control review-name" id="name-${r.id}" value="${r.name}" style="background:transparent; border:none; border-bottom:1px solid var(--border); padding:0.5rem; margin-bottom:0.5rem; color:var(--gold); width:100%;">
                                 <div style="color:var(--text-secondary); font-size:0.85rem; margin-bottom: 0.5rem; padding-right: 0.5rem;">${r.date} ${r.isLocal ? '(تقييم زائر)' : ''}</div>
+                                ${r.phone ? `<div style="color:var(--gold); font-size:0.85rem; margin-bottom: 0.5rem; padding-right: 0.5rem;">📱 رقم الجوال: <a href="tel:${r.phone}" style="color:var(--gold); text-decoration:none;">${r.phone}</a></div>` : ''}
                                 <label style="display:flex; align-items:center; gap:0.5rem; color:var(--text-secondary); font-size:0.9rem; padding-right:0.5rem; cursor:pointer;">
                                     <input type="checkbox" id="haraj-${r.id}" ${r.isHaraj !== false ? 'checked' : ''}>
                                     تقييم من حراج
@@ -641,6 +661,63 @@
                     </div>
                 `;
             });
+        }
+
+        // --- Drag and Drop Logic ---
+        let draggedReviewId = null;
+
+        function dragStart(e) {
+            draggedReviewId = e.target.closest('.review-card').id.replace('rev-card-', '');
+            e.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => e.target.style.opacity = '0.5', 0);
+        }
+
+        function dragEnter(e) {
+            e.preventDefault();
+            const targetCard = e.target.closest('.review-card');
+            if(targetCard && targetCard.id !== `rev-card-${draggedReviewId}`) {
+                targetCard.style.borderTop = "2px solid var(--gold)";
+            }
+        }
+
+        function dragLeave(e) {
+            const targetCard = e.target.closest('.review-card');
+            if(targetCard) {
+                targetCard.style.borderTop = "1px solid var(--border)";
+            }
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const targetCard = e.target.closest('.review-card');
+            
+            document.querySelectorAll('.review-card').forEach(c => {
+                c.style.opacity = '1';
+                c.style.borderTop = "1px solid var(--border)";
+            });
+
+            if (targetCard && targetCard.id !== `rev-card-${draggedReviewId}`) {
+                const targetId = targetCard.id.replace('rev-card-', '');
+                
+                // Reorder allReviews array
+                const draggedIndex = allReviews.findIndex(r => r.id === draggedReviewId);
+                const targetIndex = allReviews.findIndex(r => r.id === targetId);
+                
+                const [draggedItem] = allReviews.splice(draggedIndex, 1);
+                allReviews.splice(targetIndex, 0, draggedItem);
+                
+                // Save new order to localStorage
+                const newOrder = allReviews.map(r => r.id);
+                localStorage.setItem('reviews_order', JSON.stringify(newOrder));
+                
+                renderReviews(allReviews);
+            }
         }
 
         function saveReview(id) {
