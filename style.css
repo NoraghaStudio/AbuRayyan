@@ -139,6 +139,30 @@ body {
     background: #20bd5a;
 }
 
+.cta-facebook {
+    background: #1877F2;
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(24,119,242,0.2);
+}
+
+.cta-facebook:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(24,119,242,0.35);
+    background: #166fe5;
+}
+
+.cta-email {
+    background: #EA4335;
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(234,67,53,0.2);
+}
+
+.cta-email:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(234,67,53,0.35);
+    background: #d63c2e;
+}
+
 .cta-large {
     padding: 16px 36px;
     font-size: 1.05rem;
