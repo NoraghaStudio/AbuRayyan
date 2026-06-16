@@ -269,7 +269,8 @@
             <div class="reviews-grid" id="local-reviews-grid">
                 <!-- Local reviews injected here -->
             </div>
-            <div id="no-local-reviews-msg" style="display: none; text-align: center; color: var(--text-secondary); padding: 2rem 0; background: var(--bg-surface); border-radius: 12px; border: 1px dashed var(--border);">
+            <div id="no-local-reviews-msg"
+                style="display: none; text-align: center; color: var(--text-secondary); padding: 2rem 0; background: var(--bg-surface); border-radius: 12px; border: 1px dashed var(--border);">
                 لا توجد تقييمات حالياً.. كُن أول من يقيّم خدمتنا!
             </div>
         </div>
@@ -2823,10 +2824,10 @@
                     const { data: remoteReviews, error } = await supabaseClient
                         .from('reviews')
                         .select('*');
-                    
+
                     if (error) console.error("Error fetching reviews", error);
                     const localReviews = remoteReviews || [];
-                    
+
                     const deletedReviews = JSON.parse(localStorage.getItem('deleted_reviews') || '[]');
                     const editedReviews = JSON.parse(localStorage.getItem('edited_reviews') || '{}');
 
