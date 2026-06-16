@@ -239,6 +239,19 @@
         </div>
     </section>
 
+    <!-- Local Reviews Section -->
+    <section class="reviews-section" id="local-reviews" style="display: none; padding-top: 0;">
+        <div class="container">
+            <div class="section-header">
+                <h2>تقييمات عملائنا</h2>
+                <p class="section-desc">آراء العملاء الذين قيموا خدمتنا عبر الموقع مباشرة</p>
+            </div>
+            <div class="reviews-grid" id="local-reviews-grid">
+                <!-- Local reviews injected here -->
+            </div>
+        </div>
+    </section>
+
     <!-- Pricing Comparison Section -->
     <section class="pricing-section" id="pricing">
         <div class="container">
@@ -2478,9 +2491,31 @@
         }
 
         function renderReviews() {
-            const grid = document.getElementById('reviews-grid');
-            const toShow = reviews.slice(0, visibleCount);
-            grid.innerHTML = toShow.map((r, i) => `
+            const harajGrid = document.getElementById('reviews-grid');
+            const localGrid = document.getElementById('local-reviews-grid');
+            
+            const harajReviews = reviews.filter(r => r.isHaraj !== false);
+            const localReviewsList = reviews.filter(r => r.isHaraj === false);
+
+            const toShowHaraj = harajReviews.slice(0, visibleCount);
+            if(harajGrid) harajGrid.innerHTML = toShowHaraj.map((r, i) => generateReviewHTML(r, i)).join('');
+
+            const loadMoreBtn = document.getElementById('load-more');
+            if(loadMoreBtn) loadMoreBtn.style.display = visibleCount >= harajReviews.length ? 'none' : 'flex';
+
+            if (localGrid) {
+                const localSection = document.getElementById('local-reviews');
+                if (localReviewsList.length > 0) {
+                    if(localSection) localSection.style.display = 'block';
+                    localGrid.innerHTML = localReviewsList.map((r, i) => generateReviewHTML(r, i)).join('');
+                } else {
+                    if(localSection) localSection.style.display = 'none';
+                }
+            }
+        }
+
+        function generateReviewHTML(r, i) {
+            return `
             <div class="review-card" style="animation-delay: ${i * 0.05}s">
                 <div class="review-header">
                     <div class="reviewer-info">
@@ -2505,14 +2540,11 @@
                            </div>` 
                         : `<div style="display: inline-block; padding: 4px 10px; border: 1px solid var(--gold); color: var(--gold); border-radius: 6px; font-size: 0.85rem; font-weight: 500;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-left: 4px;"><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
-                            تقييم من زائر الموقع
+                            تقييم من خارج موقع حراج
                            </div>`
                     }
                 </div>
-            </div>
-        `).join('');
-
-            document.getElementById('load-more').style.display = visibleCount >= reviews.length ? 'none' : 'flex';
+            </div>`;
         }
 
         function loadMore() {
