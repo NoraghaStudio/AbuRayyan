@@ -2661,7 +2661,7 @@ ${comment ? 'إضافة:\\n' + comment : ''}`;
             if(typeof reviews !== 'undefined' && typeof renderReviews === 'function') {
                 reviews.unshift({
                     name: name,
-                    date: \`\${yyyy}/\${mm}/\${dd}\`,
+                    date: yyyy + '/' + mm + '/' + dd,
                     text: comment ? comment : "تم التقييم بنجاح، شكراً لتعاملكم.",
                     rating: "positive"
                 });
