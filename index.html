@@ -2795,9 +2795,6 @@
                 await applyDynamicOverrides();
             }
 
-            // Send WhatsApp Notification to Admin
-            const waMsg = `*تقييم جديد من الموقع!*\n\nالاسم: ${name}\nالتقييم: ${comment}\nرقم الجوال: ${phone || 'لم يُدخل'}`;
-            window.open(`https://wa.me/966594238893?text=${encodeURIComponent(waMsg)}`, '_blank');
 
             document.getElementById('reviewForm').style.display = 'none';
             const successMsg = document.getElementById('reviewSuccessMessage');
