@@ -389,7 +389,13 @@
                 <button class="btn" onclick="copyReviewLink()">نسخ رابط التقييم للزبائن</button>
             </div>
 
-            <div class="reviews-list" id="reviewsContainer">
+            <h2 style="color: var(--gold); margin-bottom: 1rem; margin-top: 1rem;">تقييمات عملائنا (خارج حراج)</h2>
+            <div class="reviews-list" id="localReviewsContainer" style="margin-bottom: 3rem;">
+                <p style="color: var(--text-secondary);">لا توجد تقييمات من خارج حراج حالياً.</p>
+            </div>
+
+            <h2 style="color: var(--gold); margin-bottom: 1rem;">تقييمات موقع حراج</h2>
+            <div class="reviews-list" id="harajReviewsContainer">
                 <p style="color: var(--text-secondary);">جاري التحميل...</p>
             </div>
         </section>
@@ -655,39 +661,66 @@
                 renderReviews(visibleReviews);
             } catch(e) {
                 console.error("Error loading reviews", e);
-                document.getElementById('reviewsContainer').innerHTML = '<p style="color: red;">حدث خطأ أثناء تحميل التقييمات.</p>';
+                const harajContainer = document.getElementById('harajReviewsContainer');
+                if(harajContainer) harajContainer.innerHTML = '<p style="color: red;">حدث خطأ أثناء تحميل التقييمات.</p>';
             }
         }
 
         function renderReviews(reviews) {
-            const container = document.getElementById('reviewsContainer');
-            container.innerHTML = '';
+            const localContainer = document.getElementById('localReviewsContainer');
+            const harajContainer = document.getElementById('harajReviewsContainer');
+            
+            if(localContainer) localContainer.innerHTML = '';
+            if(harajContainer) harajContainer.innerHTML = '';
 
-            reviews.forEach(r => {
-                container.innerHTML += `
-                    <div class="review-card" id="rev-card-${r.id}" draggable="true" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-                        <div class="review-header">
-                            <div style="cursor: grab; margin-left: 1rem; color: var(--text-secondary);" title="اسحب لترتيب التقييم">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                            </div>
-                            <div style="flex:1;">
-                                <input type="text" class="form-control review-name" id="name-${r.id}" value="${r.name}" style="background:transparent; border:none; border-bottom:1px solid var(--border); padding:0.5rem; margin-bottom:0.5rem; color:var(--gold); width:100%;">
-                                <div style="color:var(--text-secondary); font-size:0.85rem; margin-bottom: 0.5rem; padding-right: 0.5rem;">${r.date} ${r.isLocal ? '(تقييم زائر)' : ''}</div>
-                                ${r.phone ? `<div style="color:var(--gold); font-size:0.85rem; margin-bottom: 0.5rem; padding-right: 0.5rem;">📱 رقم الجوال: <a href="tel:${r.phone}" style="color:var(--gold); text-decoration:none;">${r.phone}</a></div>` : ''}
-                                <label style="display:flex; align-items:center; gap:0.5rem; color:var(--text-secondary); font-size:0.9rem; padding-right:0.5rem; cursor:pointer;">
-                                    <input type="checkbox" id="haraj-${r.id}" ${r.isHaraj !== false ? 'checked' : ''}>
-                                    تقييم من حراج
-                                </label>
-                            </div>
-                            <div class="review-actions" style="margin-right: 1rem;">
-                                <button class="btn" style="padding: 0.5rem 1rem;" onclick="saveReview('${r.id}')">تحديث</button>
-                                <button class="btn btn-danger" style="padding: 0.5rem 1rem;" onclick="deleteReview('${r.id}', ${r.isLocal})">حذف</button>
-                            </div>
+            const harajReviews = reviews.filter(r => r.isHaraj !== false);
+            const localReviewsList = reviews.filter(r => r.isHaraj === false);
+
+            if(localContainer) {
+                if(localReviewsList.length === 0) {
+                    localContainer.innerHTML = '<p style="color: var(--text-secondary);">لا توجد تقييمات من خارج حراج حالياً.</p>';
+                } else {
+                    localReviewsList.forEach(r => {
+                        localContainer.innerHTML += generateAdminReviewHTML(r);
+                    });
+                }
+            }
+
+            if(harajContainer) {
+                if(harajReviews.length === 0) {
+                    harajContainer.innerHTML = '<p style="color: var(--text-secondary);">لا توجد تقييمات من موقع حراج.</p>';
+                } else {
+                    harajReviews.forEach(r => {
+                        harajContainer.innerHTML += generateAdminReviewHTML(r);
+                    });
+                }
+            }
+        }
+
+        function generateAdminReviewHTML(r) {
+            return `
+                <div class="review-card" id="rev-card-${r.id}" draggable="true" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+                    <div class="review-header">
+                        <div style="cursor: grab; margin-left: 1rem; color: var(--text-secondary);" title="اسحب لترتيب التقييم">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
                         </div>
-                        <textarea class="form-control" id="text-${r.id}" style="min-height:80px;">${r.text}</textarea>
+                        <div style="flex:1;">
+                            <input type="text" class="form-control review-name" id="name-${r.id}" value="${r.name}" style="background:transparent; border:none; border-bottom:1px solid var(--border); padding:0.5rem; margin-bottom:0.5rem; color:var(--gold); width:100%;">
+                            <div style="color:var(--text-secondary); font-size:0.85rem; margin-bottom: 0.5rem; padding-right: 0.5rem;">${r.date} ${r.isLocal ? '(تقييم زائر)' : ''}</div>
+                            ${r.phone ? `<div style="color:var(--gold); font-size:0.85rem; margin-bottom: 0.5rem; padding-right: 0.5rem;">📱 رقم الجوال: <a href="tel:${r.phone}" style="color:var(--gold); text-decoration:none;">${r.phone}</a></div>` : ''}
+                            <label style="display:flex; align-items:center; gap:0.5rem; color:var(--text-secondary); font-size:0.9rem; padding-right:0.5rem; cursor:pointer;">
+                                <input type="checkbox" id="haraj-${r.id}" ${r.isHaraj !== false ? 'checked' : ''}>
+                                تقييم من حراج
+                            </label>
+                        </div>
+                        <div class="review-actions" style="margin-right: 1rem;">
+                            <button class="btn" style="padding: 0.5rem 1rem;" onclick="saveReview('${r.id}')">تحديث</button>
+                            <button class="btn btn-danger" style="padding: 0.5rem 1rem;" onclick="deleteReview('${r.id}', ${r.isLocal})">حذف</button>
+                        </div>
                     </div>
-                `;
-            });
+                    <textarea class="form-control" id="text-${r.id}" style="min-height:80px;">${r.text}</textarea>
+                </div>
+            `;
         }
 
         // --- Drag and Drop Logic ---
