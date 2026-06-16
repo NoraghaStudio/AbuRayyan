@@ -529,9 +529,13 @@
         }
 
         function copyReviewLink() {
-            // Get current base URL and append ?review=true
-            const baseUrl = window.location.href.replace('admin.html', 'index.html');
-            const reviewUrl = baseUrl.split('?')[0] + '?review=true';
+            let reviewUrl;
+            if (window.location.href.includes('admin.html')) {
+                reviewUrl = window.location.href.replace('admin.html', 'index.html').split('?')[0] + '?review=true';
+            } else {
+                // For Cloudflare Pages where the URL is just /admin
+                reviewUrl = window.location.origin + '/?review=true';
+            }
             navigator.clipboard.writeText(reviewUrl).then(() => {
                 alert('تم نسخ رابط التقييم الخاص بنجاح!\n' + reviewUrl);
             });
