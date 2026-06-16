@@ -325,7 +325,14 @@
             .review-actions { width: 100%; display: flex; gap: 0.5rem; margin-right: 0 !important; }
             .review-actions button { flex: 1; }
         }
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://ugurgagmjypijfwzgndu.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVndXJnYWdtanlwaWpmd3pnbmR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2MzAyNTQsImV4cCI6MjA5NzIwNjI1NH0.O1PapDWJM75nRwPCNEo5E8w_0-_B5mZOhTtIA8BAJx0';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    </script>
 </head>
 <body>
 
@@ -616,7 +623,13 @@
                     defaultReviews = JSON.parse(JSON.stringify(reviews));
                 }
                 
-                const localReviews = JSON.parse(localStorage.getItem('site_reviews') || '[]');
+                const { data: remoteReviews, error } = await supabase
+                    .from('reviews')
+                    .select('*');
+                
+                if (error) throw error;
+                const localReviews = remoteReviews || [];
+                
                 const deletedReviews = JSON.parse(localStorage.getItem('deleted_reviews') || '[]');
                 const editedReviews = JSON.parse(localStorage.getItem('edited_reviews') || '{}');
 
@@ -780,44 +793,54 @@
             }
         }
 
-        function saveReview(id) {
+        async function saveReview(id, isLocal) {
             const newName = document.getElementById(`name-${id}`).value;
             const newText = document.getElementById(`text-${id}`).value;
-            const isHaraj = document.getElementById(`haraj-${id}`).checked;
-
-            // Check if it's a local review
-            let localReviews = JSON.parse(localStorage.getItem('site_reviews') || '[]');
-            const localIndex = localReviews.findIndex(r => r.id === id);
-
-            if (localIndex !== -1) {
-                localReviews[localIndex].name = newName;
-                localReviews[localIndex].text = newText;
-                localReviews[localIndex].isHaraj = isHaraj;
-                localStorage.setItem('site_reviews', JSON.stringify(localReviews));
-            } else {
-                // It's a default review, save to edited_reviews
-                let editedReviews = JSON.parse(localStorage.getItem('edited_reviews') || '{}');
-                editedReviews[id] = { name: newName, text: newText, isHaraj: isHaraj };
-                localStorage.setItem('edited_reviews', JSON.stringify(editedReviews));
-            }
-            alert('تم تحديث التقييم بنجاح.');
-            loadReviews(); // Refresh UI
-        }
-
-        function deleteReview(id, isLocal) {
-            if(!confirm('هل أنت متأكد من حذف هذا التقييم؟')) return;
+            const newIsHaraj = document.getElementById(`haraj-${id}`).checked;
+            
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "جاري الحفظ...";
+            btn.disabled = true;
 
             if (isLocal) {
-                let localReviews = JSON.parse(localStorage.getItem('site_reviews') || '[]');
-                localReviews = localReviews.filter(r => r.id !== id);
-                localStorage.setItem('site_reviews', JSON.stringify(localReviews));
+                const { error } = await supabase
+                    .from('reviews')
+                    .update({ name: newName, text: newText, isHaraj: newIsHaraj })
+                    .eq('id', id);
+                if (error) alert("حدث خطأ أثناء التحديث.");
+            } else {
+                const edited = JSON.parse(localStorage.getItem('edited_reviews') || '{}');
+                edited[id] = { name: newName, text: newText, isHaraj: newIsHaraj };
+                localStorage.setItem('edited_reviews', JSON.stringify(edited));
+            }
+            
+            btn.innerText = originalText;
+            btn.disabled = false;
+            alert('تم حفظ التعديلات بنجاح!');
+            await loadReviews();
+        }
+
+        async function deleteReview(id, isLocal) {
+            if(!confirm('هل أنت متأكد من حذف هذا التقييم؟')) return;
+
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "جاري الحذف...";
+            btn.disabled = true;
+
+            if (isLocal) {
+                const { error } = await supabase.from('reviews').delete().eq('id', id);
+                if (error) alert("حدث خطأ أثناء الحذف.");
             } else {
                 let deletedReviews = JSON.parse(localStorage.getItem('deleted_reviews') || '[]');
                 if(!deletedReviews.includes(id)) deletedReviews.push(id);
                 localStorage.setItem('deleted_reviews', JSON.stringify(deletedReviews));
             }
             
-            document.getElementById(`rev-card-${id}`).remove();
+            btn.innerText = originalText;
+            btn.disabled = false;
+            await loadReviews();
         }
 
         // Init

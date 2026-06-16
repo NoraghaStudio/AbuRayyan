@@ -21,6 +21,12 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://ugurgagmjypijfwzgndu.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVndXJnYWdtanlwaWpmd3pnbmR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2MzAyNTQsImV4cCI6MjA5NzIwNjI1NH0.O1PapDWJM75nRwPCNEo5E8w_0-_B5mZOhTtIA8BAJx0';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    </script>
 </head>
 
 <body>
@@ -2745,18 +2751,13 @@
         // Initialize stars
         ['amanah', 'speed', 'prof', 'rec'].forEach(g => setStar(g, 5));
 
-        function submitReview(e) {
+        async function submitReview(e) {
             e.preventDefault();
             const name = document.getElementById('revName').value;
             const phone = document.getElementById('revPhone').value;
             const comment = document.getElementById('revComment').value;
 
-            const am = parseInt(document.getElementById('star-amanah').getAttribute('data-val'));
-            const sp = parseInt(document.getElementById('star-speed').getAttribute('data-val'));
-            const pr = parseInt(document.getElementById('star-prof').getAttribute('data-val'));
-            const re = parseInt(document.getElementById('star-rec').getAttribute('data-val'));
-
-            // Add locally to the reviews array
+            // Add to Supabase
             const today = new Date();
             const yyyy = today.getFullYear();
             const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -2772,18 +2773,32 @@
                 phone: phone || ''
             };
 
-            if (typeof reviews !== 'undefined' && typeof renderReviews === 'function') {
-                let localReviews = [];
-                try {
-                    localReviews = JSON.parse(localStorage.getItem('site_reviews') || '[]');
-                } catch (e) { }
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = "جاري الإرسال...";
+            submitBtn.disabled = true;
 
-                localReviews.unshift(newReview);
-                localStorage.setItem('site_reviews', JSON.stringify(localReviews));
+            const { error } = await supabase
+                .from('reviews')
+                .insert([newReview]);
 
-                reviews.unshift(newReview);
-                renderReviews();
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
+
+            if (error) {
+                console.error("Error inserting review:", error);
+                alert("حدث خطأ أثناء إرسال التقييم. حاول مرة أخرى.");
+                return;
             }
+
+            if (typeof renderReviews === 'function') {
+                await applyDynamicOverrides();
+            }
+
+            // Send WhatsApp Notification to Admin
+            const waMsg = `*تقييم جديد من الموقع!*\n\nالاسم: ${name}\nالتقييم: ${comment}\nرقم الجوال: ${phone || 'لم يُدخل'}`;
+            window.open(`https://wa.me/966594238893?text=${encodeURIComponent(waMsg)}`, '_blank');
+
             document.getElementById('reviewForm').style.display = 'none';
             const successMsg = document.getElementById('reviewSuccessMessage');
             if (successMsg) successMsg.style.display = 'block';
@@ -2799,11 +2814,17 @@
             defaultReviews = JSON.parse(JSON.stringify(reviews));
         }
 
-        function applyDynamicOverrides() {
+        async function applyDynamicOverrides() {
             // 1. Reviews Override
             try {
                 if (typeof reviews !== 'undefined') {
-                    const localReviews = JSON.parse(localStorage.getItem('site_reviews') || '[]');
+                    const { data: remoteReviews, error } = await supabase
+                        .from('reviews')
+                        .select('*');
+                    
+                    if (error) console.error("Error fetching reviews", error);
+                    const localReviews = remoteReviews || [];
+                    
                     const deletedReviews = JSON.parse(localStorage.getItem('deleted_reviews') || '[]');
                     const editedReviews = JSON.parse(localStorage.getItem('edited_reviews') || '{}');
 
