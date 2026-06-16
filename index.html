@@ -356,6 +356,10 @@
                     </svg>
                     شاهد أكثر من 450 تقييم على حسابنا في حراج
                 </a>
+                <button onclick="openReviewModal()" class="cta-btn" style="margin-top: 16px; width: 100%; max-width: 350px; justify-content: center; font-size: 1.1rem; background: var(--bg-surface); color: var(--text-primary); border: 2px solid var(--gold); margin-left: auto; margin-right: auto; cursor: pointer;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" style="margin-left: 8px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    أضف تقييمك الآن
+                </button>
             </div>
 
             <div class="reviews-grid" id="reviews-grid">
@@ -2541,6 +2545,137 @@
                 1024: { slidesPerView: 3.5 }
             }
         });
+    </script>
+
+    <!-- Review Modal -->
+    <style>
+        .star-rating-btn { font-size: 1.8rem; color: #444; cursor: pointer; transition: color 0.2s; user-select: none; }
+        .star-rating-btn.active { color: var(--gold); }
+        .rating-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 8px 16px; border-radius: 8px; margin-bottom: 12px; }
+        @media (max-width: 480px) {
+            .rating-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+        }
+    </style>
+    <div id="reviewModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
+        <div style="background: var(--bg-surface); border: 2px solid var(--border-color); border-radius: 16px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 24px; position: relative;">
+            <button onclick="closeReviewModal()" style="position: absolute; top: 16px; left: 16px; background: none; border: none; color: var(--text-secondary); font-size: 2rem; cursor: pointer; line-height: 1;">&times;</button>
+            
+            <h3 style="text-align: center; color: var(--gold); margin-bottom: 8px; font-size: 1.5rem;">أضف تقييمك</h3>
+            <p style="text-align: center; color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 24px; line-height: 1.5;">ارجـو تـقـييـم الخـدمـه الـمقدمـه مـن قـبـلـنـا بـكـل امـانـه : -</p>
+            
+            <form id="reviewForm" onsubmit="submitReview(event)">
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--text-primary);">الاسم (إلزامي):</label>
+                    <input type="text" id="revName" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-primary); font-family: inherit;">
+                </div>
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--text-primary);">رقم الجوال (اختياري):</label>
+                    <input type="tel" id="revPhone" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-primary); font-family: inherit;">
+                </div>
+
+                <div class="rating-row">
+                    <label style="color: var(--text-primary); font-weight: 500;">1️⃣ الامانه .</label>
+                    <div id="star-amanah" data-val="5">
+                        <span class="star-rating-btn" onclick="setStar('amanah', 1)">★</span><span class="star-rating-btn" onclick="setStar('amanah', 2)">★</span><span class="star-rating-btn" onclick="setStar('amanah', 3)">★</span><span class="star-rating-btn" onclick="setStar('amanah', 4)">★</span><span class="star-rating-btn" onclick="setStar('amanah', 5)">★</span>
+                    </div>
+                </div>
+                <div class="rating-row">
+                    <label style="color: var(--text-primary); font-weight: 500;">2️⃣ السرعه.</label>
+                    <div id="star-speed" data-val="5">
+                        <span class="star-rating-btn" onclick="setStar('speed', 1)">★</span><span class="star-rating-btn" onclick="setStar('speed', 2)">★</span><span class="star-rating-btn" onclick="setStar('speed', 3)">★</span><span class="star-rating-btn" onclick="setStar('speed', 4)">★</span><span class="star-rating-btn" onclick="setStar('speed', 5)">★</span>
+                    </div>
+                </div>
+                <div class="rating-row">
+                    <label style="color: var(--text-primary); font-weight: 500;">3️⃣ الاحترافيه .</label>
+                    <div id="star-prof" data-val="5">
+                        <span class="star-rating-btn" onclick="setStar('prof', 1)">★</span><span class="star-rating-btn" onclick="setStar('prof', 2)">★</span><span class="star-rating-btn" onclick="setStar('prof', 3)">★</span><span class="star-rating-btn" onclick="setStar('prof', 4)">★</span><span class="star-rating-btn" onclick="setStar('prof', 5)">★</span>
+                    </div>
+                </div>
+                <div class="rating-row" style="margin-bottom: 24px;">
+                    <label style="color: var(--text-primary); font-weight: 500;">4️⃣ انصح بالتعامل معاهم.</label>
+                    <div id="star-rec" data-val="5">
+                        <span class="star-rating-btn" onclick="setStar('rec', 1)">★</span><span class="star-rating-btn" onclick="setStar('rec', 2)">★</span><span class="star-rating-btn" onclick="setStar('rec', 3)">★</span><span class="star-rating-btn" onclick="setStar('rec', 4)">★</span><span class="star-rating-btn" onclick="setStar('rec', 5)">★</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--text-primary);">كتابة إضافية (اختياري):</label>
+                    <textarea id="revComment" rows="3" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-primary); font-family: inherit; resize: vertical;"></textarea>
+                </div>
+
+                <button type="submit" class="cta-btn cta-whatsapp" style="width: 100%; justify-content: center; font-size: 1.1rem;">إرسال التقييم</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openReviewModal() {
+            document.getElementById('reviewModal').style.display = 'flex';
+        }
+        function closeReviewModal() {
+            document.getElementById('reviewModal').style.display = 'none';
+        }
+        function setStar(group, val) {
+            const container = document.getElementById('star-' + group);
+            container.setAttribute('data-val', val);
+            const stars = container.querySelectorAll('.star-rating-btn');
+            stars.forEach((s, i) => {
+                if (i < val) s.classList.add('active');
+                else s.classList.remove('active');
+            });
+        }
+        // Initialize stars
+        ['amanah', 'speed', 'prof', 'rec'].forEach(g => setStar(g, 5));
+
+        function submitReview(e) {
+            e.preventDefault();
+            const name = document.getElementById('revName').value;
+            const phone = document.getElementById('revPhone').value;
+            const comment = document.getElementById('revComment').value;
+            
+            const am = parseInt(document.getElementById('star-amanah').getAttribute('data-val'));
+            const sp = parseInt(document.getElementById('star-speed').getAttribute('data-val'));
+            const pr = parseInt(document.getElementById('star-prof').getAttribute('data-val'));
+            const re = parseInt(document.getElementById('star-rec').getAttribute('data-val'));
+            
+            const textMsg = `ارجـو تـقـييـم الخـدمـه الـمقدمـه مـن قـبـلـنـا بـكـل امـانـه  : -
+1️⃣الامانه  .
+${'⭐️'.repeat(am)}
+2️⃣ السرعه.
+${'⭐️'.repeat(sp)}
+3️⃣الاحترافيه .
+${'⭐️'.repeat(pr)}
+4️⃣ انصح بالتعامل معاهم. 
+${'⭐️'.repeat(re)}
+
+الاسم: ${name}
+${phone ? 'رقم الجوال: ' + phone : ''}
+${comment ? 'إضافة:\\n' + comment : ''}`;
+
+            // Add locally to the reviews array
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            
+            if(typeof reviews !== 'undefined' && typeof renderReviews === 'function') {
+                reviews.unshift({
+                    name: name,
+                    date: \`\${yyyy}/\${mm}/\${dd}\`,
+                    text: comment ? comment : "تم التقييم بنجاح، شكراً لتعاملكم.",
+                    rating: "positive"
+                });
+                renderReviews();
+            }
+            
+            closeReviewModal();
+            document.getElementById('reviewForm').reset();
+            ['amanah', 'speed', 'prof', 'rec'].forEach(g => setStar(g, 5));
+            
+            // Send to whatsapp
+            const waLink = "https://wa.me/966594238893?text=" + encodeURIComponent(textMsg);
+            window.open(waLink, '_blank');
+        }
     </script>
 </body>
 
