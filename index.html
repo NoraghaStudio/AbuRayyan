@@ -2497,9 +2497,17 @@
                 </div>
                 <div class="review-stars">★★★★★</div>
                 <p class="review-text">${r.text}</p>
-                <div class="review-source">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
-                    مراجعة موثّقة على haraj.com
+                <div class="review-source" style="margin-top: 1rem;">
+                    ${r.isHaraj !== false 
+                        ? `<div style="display: inline-block; padding: 4px 10px; border: 1px solid #2196F3; color: #2196F3; border-radius: 6px; font-size: 0.85rem; font-weight: 500;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-left: 4px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1-2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            تقييم من حراج
+                           </div>` 
+                        : `<div style="display: inline-block; padding: 4px 10px; border: 1px solid var(--gold); color: var(--gold); border-radius: 6px; font-size: 0.85rem; font-weight: 500;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-left: 4px;"><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+                            تقييم من زائر الموقع
+                           </div>`
+                    }
                 </div>
             </div>
         `).join('');
@@ -2649,7 +2657,8 @@
                 name: name,
                 date: yyyy + '/' + mm + '/' + dd,
                 text: comment ? comment : "تم التقييم بنجاح، شكراً لتعاملكم.",
-                rating: "positive"
+                rating: "positive",
+                isHaraj: false
             };
 
             if(typeof reviews !== 'undefined' && typeof renderReviews === 'function') {
@@ -2697,6 +2706,9 @@
                         if(editedReviews[r.id]) {
                             r.name = editedReviews[r.id].name;
                             r.text = editedReviews[r.id].text;
+                            if (editedReviews[r.id].isHaraj !== undefined) {
+                                r.isHaraj = editedReviews[r.id].isHaraj;
+                            }
                         }
                     });
 
@@ -2740,7 +2752,17 @@
         }
 
         // Apply dynamic overrides on load
-        document.addEventListener('DOMContentLoaded', applyDynamicOverrides);
+        document.addEventListener('DOMContentLoaded', () => {
+            applyDynamicOverrides();
+            
+            // Auto open review modal from link
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('review') === 'true' || urlParams.get('addReview') === 'true') {
+                setTimeout(() => {
+                    if(typeof openReviewModal === 'function') openReviewModal();
+                }, 800);
+            }
+        });
         
         // Listen for storage changes from other tabs to update instantly
         window.addEventListener('storage', (e) => {

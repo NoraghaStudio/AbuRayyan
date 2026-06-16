@@ -352,8 +352,11 @@
         <!-- Reviews Section -->
         <section id="reviews" class="section">
             <div class="header">
-                <h1>إدارة التقييمات</h1>
-                <p style="color: var(--text-secondary);">يمكنك تعديل أو حذف التقييمات المعروضة في الموقع.</p>
+                <div>
+                    <h1>إدارة التقييمات</h1>
+                    <p style="color: var(--text-secondary);">يمكنك تعديل أو حذف التقييمات المعروضة في الموقع.</p>
+                </div>
+                <button class="btn" onclick="copyReviewLink()">نسخ رابط التقييم للزبائن</button>
             </div>
 
             <div class="reviews-list" id="reviewsContainer">
@@ -525,6 +528,15 @@
             loadGallery();
         }
 
+        function copyReviewLink() {
+            // Get current base URL and append ?review=true
+            const baseUrl = window.location.href.replace('admin.html', 'index.html');
+            const reviewUrl = baseUrl.split('?')[0] + '?review=true';
+            navigator.clipboard.writeText(reviewUrl).then(() => {
+                alert('تم نسخ رابط التقييم الخاص بنجاح!\n' + reviewUrl);
+            });
+        }
+
         // --- Reviews Logic ---
         let allReviews = [];
 
@@ -576,11 +588,15 @@
                 container.innerHTML += `
                     <div class="review-card" id="rev-card-${r.id}">
                         <div class="review-header">
-                            <div>
-                                <input type="text" class="form-control review-name" id="name-${r.id}" value="${r.name}" style="background:transparent; border:none; border-bottom:1px solid var(--border); padding:0.5rem; margin-bottom:0.5rem; color:var(--gold);">
-                                <div style="color:var(--text-secondary); font-size:0.85rem; margin-bottom: 0.5rem;">${r.date} ${r.isLocal ? '(تقييم زائر)' : ''}</div>
+                            <div style="flex:1;">
+                                <input type="text" class="form-control review-name" id="name-${r.id}" value="${r.name}" style="background:transparent; border:none; border-bottom:1px solid var(--border); padding:0.5rem; margin-bottom:0.5rem; color:var(--gold); width:100%;">
+                                <div style="color:var(--text-secondary); font-size:0.85rem; margin-bottom: 0.5rem; padding-right: 0.5rem;">${r.date} ${r.isLocal ? '(تقييم زائر)' : ''}</div>
+                                <label style="display:flex; align-items:center; gap:0.5rem; color:var(--text-secondary); font-size:0.9rem; padding-right:0.5rem; cursor:pointer;">
+                                    <input type="checkbox" id="haraj-${r.id}" ${r.isHaraj !== false ? 'checked' : ''}>
+                                    تقييم من حراج
+                                </label>
                             </div>
-                            <div class="review-actions">
+                            <div class="review-actions" style="margin-right: 1rem;">
                                 <button class="btn" style="padding: 0.5rem 1rem;" onclick="saveReview('${r.id}')">تحديث</button>
                                 <button class="btn btn-danger" style="padding: 0.5rem 1rem;" onclick="deleteReview('${r.id}', ${r.isLocal})">حذف</button>
                             </div>
@@ -594,6 +610,7 @@
         function saveReview(id) {
             const newName = document.getElementById(`name-${id}`).value;
             const newText = document.getElementById(`text-${id}`).value;
+            const isHaraj = document.getElementById(`haraj-${id}`).checked;
 
             // Check if it's a local review
             let localReviews = JSON.parse(localStorage.getItem('site_reviews') || '[]');
@@ -602,14 +619,16 @@
             if (localIndex !== -1) {
                 localReviews[localIndex].name = newName;
                 localReviews[localIndex].text = newText;
+                localReviews[localIndex].isHaraj = isHaraj;
                 localStorage.setItem('site_reviews', JSON.stringify(localReviews));
             } else {
                 // It's a default review, save to edited_reviews
                 let editedReviews = JSON.parse(localStorage.getItem('edited_reviews') || '{}');
-                editedReviews[id] = { name: newName, text: newText };
+                editedReviews[id] = { name: newName, text: newText, isHaraj: isHaraj };
                 localStorage.setItem('edited_reviews', JSON.stringify(editedReviews));
             }
-            alert('تم تحديث التقييم.');
+            alert('تم تحديث التقييم بنجاح.');
+            loadReviews(); // Refresh UI
         }
 
         function deleteReview(id, isLocal) {
