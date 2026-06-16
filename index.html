@@ -2801,7 +2801,30 @@
                 await applyDynamicOverrides();
             }
 
+            // إرسال إشعار تليجرام بالخلفية
+            const telegramBotToken = 'YOUR_BOT_TOKEN_HERE';
+            const telegramChatId = 'YOUR_CHAT_ID_HERE';
+            
+            if (telegramBotToken !== 'YOUR_BOT_TOKEN_HERE') {
+                const tgMsg = `🌟 *تقييم جديد من الموقع!*\n\n` +
+                              `👤 *الاسم:* ${name}\n` +
+                              `📱 *رقم الجوال:* ${phone || 'لم يُدخل'}\n` +
+                              `💬 *التقييم:* ${comment || 'بدون تعليق'}\n\n` +
+                              `⭐ *الأمانة:* ${am}/5\n` +
+                              `⭐ *السرعة:* ${sp}/5\n` +
+                              `⭐ *الاحترافية:* ${pr}/5\n` +
+                              `⭐ *ينصح بالتعامل:* ${re}/5`;
 
+                fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: telegramChatId,
+                        text: tgMsg,
+                        parse_mode: 'Markdown'
+                    })
+                }).catch(e => console.error('Telegram Error:', e));
+            }
             document.getElementById('reviewForm').style.display = 'none';
             const successMsg = document.getElementById('reviewSuccessMessage');
             if (successMsg) successMsg.style.display = 'block';
