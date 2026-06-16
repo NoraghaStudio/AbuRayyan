@@ -331,7 +331,7 @@
     <script>
         const supabaseUrl = 'https://ugurgagmjypijfwzgndu.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVndXJnYWdtanlwaWpmd3pnbmR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2MzAyNTQsImV4cCI6MjA5NzIwNjI1NH0.O1PapDWJM75nRwPCNEo5E8w_0-_B5mZOhTtIA8BAJx0';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
     </script>
 </head>
 <body>
@@ -623,7 +623,7 @@
                     defaultReviews = JSON.parse(JSON.stringify(reviews));
                 }
                 
-                const { data: remoteReviews, error } = await supabase
+                const { data: remoteReviews, error } = await supabaseClient
                     .from('reviews')
                     .select('*');
                 
@@ -804,7 +804,7 @@
             btn.disabled = true;
 
             if (isLocal) {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('reviews')
                     .update({ name: newName, text: newText, isHaraj: newIsHaraj })
                     .eq('id', id);
@@ -830,7 +830,7 @@
             btn.disabled = true;
 
             if (isLocal) {
-                const { error } = await supabase.from('reviews').delete().eq('id', id);
+                const { error } = await supabaseClient.from('reviews').delete().eq('id', id);
                 if (error) alert("حدث خطأ أثناء الحذف.");
             } else {
                 let deletedReviews = JSON.parse(localStorage.getItem('deleted_reviews') || '[]');

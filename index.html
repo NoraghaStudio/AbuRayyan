@@ -25,7 +25,7 @@
     <script>
         const supabaseUrl = 'https://ugurgagmjypijfwzgndu.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVndXJnYWdtanlwaWpmd3pnbmR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2MzAyNTQsImV4cCI6MjA5NzIwNjI1NH0.O1PapDWJM75nRwPCNEo5E8w_0-_B5mZOhTtIA8BAJx0';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
     </script>
 </head>
 
@@ -250,14 +250,27 @@
     </section>
 
     <!-- Local Reviews Section -->
-    <section class="reviews-section" id="local-reviews" style="display: none; padding-top: 0;">
+    <section class="reviews-section" id="local-reviews" style="padding-top: 0;">
         <div class="container">
             <div class="section-header">
-                <h2>تقييمات عملائنا</h2>
+                <h2>تقييم عملائنا من خارج حراج ومستعمل</h2>
                 <p class="section-desc">آراء العملاء الذين قيموا خدمتنا عبر الموقع مباشرة</p>
+                <button onclick="openReviewModal()" class="cta-btn"
+                    style="margin-top: 16px; width: 100%; max-width: 350px; justify-content: center; font-size: 1.1rem; background: var(--bg-surface); color: var(--text-primary); border: 2px solid var(--gold); margin-left: auto; margin-right: auto; cursor: pointer;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"
+                        style="margin-left: 8px;">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                        </polygon>
+                    </svg>
+                    أضف تقييمك الآن
+                </button>
             </div>
             <div class="reviews-grid" id="local-reviews-grid">
                 <!-- Local reviews injected here -->
+            </div>
+            <div id="no-local-reviews-msg" style="display: none; text-align: center; color: var(--text-secondary); padding: 2rem 0; background: var(--bg-surface); border-radius: 12px; border: 1px dashed var(--border);">
+                لا توجد تقييمات حالياً.. كُن أول من يقيّم خدمتنا!
             </div>
         </div>
     </section>
@@ -379,16 +392,6 @@
                     </svg>
                     شاهد أكثر من 350 تقييم على حسابنا في حراج
                 </a>
-                <button onclick="openReviewModal()" class="cta-btn"
-                    style="margin-top: 16px; width: 100%; max-width: 350px; justify-content: center; font-size: 1.1rem; background: var(--bg-surface); color: var(--text-primary); border: 2px solid var(--gold); margin-left: auto; margin-right: auto; cursor: pointer;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"
-                        style="margin-left: 8px;">
-                        <polygon
-                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-                        </polygon>
-                    </svg>
-                    أضف تقييمك الآن
-                </button>
             </div>
 
             <div class="reviews-grid" id="reviews-grid">
@@ -2521,11 +2524,13 @@
 
             if (localGrid) {
                 const localSection = document.getElementById('local-reviews');
+                const noReviewsMsg = document.getElementById('no-local-reviews-msg');
                 if (localReviewsList.length > 0) {
-                    if (localSection) localSection.style.display = 'block';
                     localGrid.innerHTML = localReviewsList.map((r, i) => generateReviewHTML(r, i)).join('');
+                    if (noReviewsMsg) noReviewsMsg.style.display = 'none';
                 } else {
-                    if (localSection) localSection.style.display = 'none';
+                    localGrid.innerHTML = '';
+                    if (noReviewsMsg) noReviewsMsg.style.display = 'block';
                 }
             }
         }
@@ -2778,7 +2783,7 @@
             submitBtn.innerText = "جاري الإرسال...";
             submitBtn.disabled = true;
 
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('reviews')
                 .insert([newReview]);
 
@@ -2815,7 +2820,7 @@
             // 1. Reviews Override
             try {
                 if (typeof reviews !== 'undefined') {
-                    const { data: remoteReviews, error } = await supabase
+                    const { data: remoteReviews, error } = await supabaseClient
                         .from('reviews')
                         .select('*');
                     
