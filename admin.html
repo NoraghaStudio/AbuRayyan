@@ -298,6 +298,33 @@
             max-width: 400px;
         }
         
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                top: 0;
+                z-index: 100;
+                padding: 1rem;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                border-left: none;
+                border-bottom: 1px solid var(--border);
+            }
+            .sidebar .logo { margin-bottom: 0; font-size: 1.1rem; }
+            .sidebar .logo img { height: 24px !important; }
+            .nav-item { margin-bottom: 0; padding: 0.5rem; font-size: 0.85rem; gap: 4px; }
+            .nav-item svg { width: 16px; height: 16px; }
+            .view-site-link { display: none; }
+            .main-content { margin-right: 0; margin-top: 70px; padding: 1.5rem 1rem; }
+            .header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+            .header button { width: 100%; }
+            .review-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .review-actions { width: 100%; display: flex; gap: 0.5rem; margin-right: 0 !important; }
+            .review-actions button { flex: 1; }
+        }
     </style>
 </head>
 <body>
@@ -568,8 +595,8 @@
                 // For Cloudflare Pages where the URL is just /admin
                 reviewUrl = window.location.origin + '/?review=true';
             }
-            navigator.clipboard.writeText(reviewUrl).then(() => {
-                alert('تم نسخ رابط التقييم الخاص بنجاح!\n' + reviewUrl);
+            navigator.clipboard.writeText('تفضل بتقييم خدمتنا من خلال الرابط\n' + reviewUrl).then(() => {
+                alert('تم نسخ رابط التقييم الخاص بنجاح!');
             });
         }
 
