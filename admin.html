@@ -326,6 +326,14 @@
             .review-actions button { flex: 1; }
         }
         }
+        .settings-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            margin-top: 2rem;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -359,6 +367,10 @@
         <div class="nav-item" onclick="switchTab('reviews')">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1-2-2h14a2 2 0 0 1 2 2z"></path></svg>
             إدارة التقييمات
+        </div>
+        <div class="nav-item" onclick="switchTab('settings')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            الإعدادات
         </div>
 
         <div style="margin-top: auto;">
@@ -410,6 +422,38 @@
             </div>
         </section>
 
+        <!-- Settings Section -->
+        <section id="settings" class="section">
+            <div class="header">
+                <div>
+                    <h1>إعدادات لوحة التحكم</h1>
+                    <p style="color: var(--text-secondary);">يمكنك تغيير كلمة المرور هنا لحماية حسابك.</p>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h3 style="color: var(--gold); margin-bottom: 1.5rem;">تغيير كلمة المرور</h3>
+                
+                <div class="form-group">
+                    <label>كلمة المرور الحالية</label>
+                    <input type="password" id="oldPassword" class="form-control" placeholder="أدخل كلمة المرور القديمة">
+                </div>
+
+                <div class="form-group">
+                    <label>كلمة المرور الجديدة</label>
+                    <input type="password" id="newPassword" class="form-control" placeholder="أدخل كلمة المرور الجديدة">
+                </div>
+
+                <div class="form-group">
+                    <label>تأكيد كلمة المرور الجديدة</label>
+                    <input type="password" id="confirmNewPassword" class="form-control" placeholder="أعد إدخال كلمة المرور الجديدة">
+                </div>
+
+                <button class="btn" style="width: 100%;" onclick="changePassword()">حفظ كلمة المرور الجديدة</button>
+                <p id="passwordChangeStatus" style="margin-top: 1rem; text-align: center; display: none; font-weight: bold;"></p>
+            </div>
+        </section>
+
     </main>
 
     <script src="reviews-data.js"></script>
@@ -437,7 +481,9 @@
             const input = document.getElementById('adminPassword').value;
             let attempts = parseInt(localStorage.getItem('adminLoginAttempts') || '0');
 
-            if (input === ADMIN_PASSWORD) {
+            const currentPassword = localStorage.getItem('customAdminPassword') || ADMIN_PASSWORD;
+
+            if (input === currentPassword) {
                 localStorage.removeItem('adminLoginAttempts');
                 sessionStorage.setItem('isAdminAuth', 'true');
                 sessionStorage.setItem('lastAdminActivity', Date.now().toString());
@@ -886,6 +932,46 @@
             localStorage.setItem('site_reviews', Date.now().toString());
             
             await loadReviews();
+        }
+
+        function changePassword() {
+            const oldPassInput = document.getElementById('oldPassword').value;
+            const newPassInput = document.getElementById('newPassword').value;
+            const confirmNewPassInput = document.getElementById('confirmNewPassword').value;
+            const statusElem = document.getElementById('passwordChangeStatus');
+
+            const currentPassword = localStorage.getItem('customAdminPassword') || ADMIN_PASSWORD;
+
+            if (oldPassInput !== currentPassword) {
+                statusElem.textContent = "كلمة المرور الحالية غير صحيحة!";
+                statusElem.style.color = "var(--danger)";
+                statusElem.style.display = 'block';
+                return;
+            }
+
+            if (!newPassInput) {
+                statusElem.textContent = "يرجى إدخال كلمة المرور الجديدة!";
+                statusElem.style.color = "var(--danger)";
+                statusElem.style.display = 'block';
+                return;
+            }
+
+            if (newPassInput !== confirmNewPassInput) {
+                statusElem.textContent = "كلمات المرور الجديدة غير متطابقة!";
+                statusElem.style.color = "var(--danger)";
+                statusElem.style.display = 'block';
+                return;
+            }
+
+            localStorage.setItem('customAdminPassword', newPassInput);
+            statusElem.textContent = "تم تغيير كلمة المرور بنجاح!";
+            statusElem.style.color = "#4caf50";
+            statusElem.style.display = 'block';
+
+            // Clear inputs
+            document.getElementById('oldPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmNewPassword').value = '';
         }
 
         // Init
