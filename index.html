@@ -2,6 +2,11 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <script>
+        if (window.location.hostname === 'admin.abu-rayan.com') {
+            window.location.replace('/admin.html');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ابوريان لفحص السيارات | خبرة 12 سنة في فحص السيارات</title>
@@ -58,7 +63,8 @@
                     style="white-space: nowrap; color: var(--gold); -webkit-text-fill-color: var(--gold); font-size: 1.1em;">ابـوريــــــــان</span><br>
                 <span
                     style="display: block; font-size: 1.4rem; font-weight: 500; color: var(--gold); -webkit-text-fill-color: var(--gold); margin-top: 12px; line-height: 1.6;">متخصص
-                    في فحص جميع السيارات قبل الشراء في المنطقة الشرقية <span style="white-space: nowrap;">(الدمام، الخبر، الظهران)</span></span>
+                    في فحص جميع السيارات قبل الشراء في المنطقة الشرقية <span style="white-space: nowrap;">(الدمام،
+                        الخبر، الظهران)</span></span>
             </h1>
             <p class="hero-desc">هل وجدت سيارة في الشرقية وأنت خارج المنطقة؟ لا تسافر وتتعب! أنا أنوب عنك بالفحص بكل
                 أمانة ودقة وتوثيق كامل بأكثر من 40 صورة وفيديو</p>
@@ -110,7 +116,8 @@
     <section class="services-section" id="services">
         <div class="container">
             <div class="section-header">
-                <img src="images/صورة متحركة عند خدماتنا.webp" alt="خدماتنا" style="width: 120px; margin-bottom: 12px; display: inline-block;">
+                <img src="images/صورة متحركة عند خدماتنا.webp" alt="خدماتنا"
+                    style="width: 120px; margin-bottom: 12px; display: inline-block;">
                 <h2>خدماتنا الرئيسية</h2>
             </div>
             <img src="images/services.webp" alt="خدماتنا الرئيسية" class="services-main-img">
@@ -161,7 +168,9 @@
     <section class="reports-section" id="reports">
         <div class="container">
             <div class="section-header">
-                <img src="images/صورة متحركة عند تقارير تاريخ السيارات المستعملة.webp" alt="تقارير تاريخ السيارات المستعملة" style="width: 120px; margin-bottom: 12px; display: inline-block;">
+                <img src="images/صورة متحركة عند تقارير تاريخ السيارات المستعملة.webp"
+                    alt="تقارير تاريخ السيارات المستعملة"
+                    style="width: 120px; margin-bottom: 12px; display: inline-block;">
                 <h2>تقارير تاريخ السيارات المستعملة</h2>
                 <p class="section-desc">جميع المعلومات حسب توفرها من المصدر وقت استخراج التقرير<br><span
                         style="color: var(--gold); font-weight: 600;">قراءة العداد & الحوادث وصورها & عدد الملاك</span>
@@ -222,9 +231,10 @@
     <section class="gallery-section" id="reports-samples" style="background: var(--bg-surface); padding-top: 0;">
         <div class="container">
             <div class="section-header">
-                <img src="images/صورة متحركة عند التقارير التي نستخرجها.webp" alt="التقارير التي نستخرجها" style="width: 120px; margin-bottom: 12px; display: inline-block;">
+                <img src="images/صورة متحركة عند التقارير التي نستخرجها.webp" alt="التقارير التي نستخرجها"
+                    style="width: 120px; margin-bottom: 12px; display: inline-block;">
                 <h2>التقارير التي نستخرجها</h2>
-                <p class="section-desc">✅️الوحيد في العالم الذي  يستخرج جميع تقارير فحص السيارات قبل الشراء✅️</p>
+                <p class="section-desc">✅️الوحيد في العالم الذي يستخرج جميع تقارير فحص السيارات قبل الشراء✅️</p>
             </div>
             <div class="swiper reports-swiper" style="padding-bottom: 24px;">
                 <div class="swiper-wrapper">
@@ -2810,16 +2820,16 @@
             // إرسال إشعار تليجرام بالخلفية
             const telegramBotToken = '8946139613:AAEXDgnxly5Dy4I_4vxR3MmdqyoZLVnCwfk';
             const telegramChatId = '2011981890';
-            
+
             if (telegramBotToken !== 'YOUR_BOT_TOKEN_HERE') {
                 const tgMsg = `🌟 *تقييم جديد من الموقع!*\n\n` +
-                              `👤 *الاسم:* ${name}\n` +
-                              `📱 *رقم الجوال:* ${phone || 'لم يُدخل'}\n` +
-                              `💬 *التقييم:* ${comment || 'بدون تعليق'}\n\n` +
-                              `⭐ *الأمانة:* ${am}/5\n` +
-                              `⭐ *السرعة:* ${sp}/5\n` +
-                              `⭐ *الاحترافية:* ${pr}/5\n` +
-                              `⭐ *ينصح بالتعامل:* ${re}/5`;
+                    `👤 *الاسم:* ${name}\n` +
+                    `📱 *رقم الجوال:* ${phone || 'لم يُدخل'}\n` +
+                    `💬 *التقييم:* ${comment || 'بدون تعليق'}\n\n` +
+                    `⭐ *الأمانة:* ${am}/5\n` +
+                    `⭐ *السرعة:* ${sp}/5\n` +
+                    `⭐ *الاحترافية:* ${pr}/5\n` +
+                    `⭐ *ينصح بالتعامل:* ${re}/5`;
 
                 fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
                     method: 'POST',
