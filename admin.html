@@ -393,7 +393,10 @@
                     <h1>إدارة التقييمات</h1>
                     <p style="color: var(--text-secondary);">يمكنك تعديل أو حذف التقييمات المعروضة في الموقع.</p>
                 </div>
-                <button class="btn" onclick="copyReviewLink()">نسخ رابط التقييم للزبائن</button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" onclick="addHarajReview()">إضافة تقييم من حراج</button>
+                    <button class="btn" onclick="copyReviewLink()">نسخ رابط التقييم للزبائن</button>
+                </div>
             </div>
 
             <h2 style="color: var(--gold); margin-bottom: 1rem; margin-top: 1rem;">تقييمات عملائنا (خارج حراج)</h2>
@@ -686,8 +689,10 @@
             if(localContainer) localContainer.innerHTML = '';
             if(harajContainer) harajContainer.innerHTML = '';
 
-            const harajReviews = reviews.filter(r => r.isHaraj !== false);
-            const localReviewsList = reviews.filter(r => r.isHaraj === false);
+            const sortedReviews = [...reviews].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const harajReviews = sortedReviews.filter(r => r.isHaraj !== false);
+            const localReviewsList = sortedReviews.filter(r => r.isHaraj === false);
 
             if(localContainer) {
                 if(localReviewsList.length === 0) {
@@ -840,6 +845,46 @@
             
             btn.innerText = originalText;
             btn.disabled = false;
+            await loadReviews();
+        }
+
+        async function addHarajReview() {
+            const name = prompt("اسم العميل:");
+            if (!name) return;
+            const text = prompt("التقييم:");
+            if (!text) return;
+            
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+
+            const newReview = {
+                id: 'rev_' + Date.now(),
+                name: name,
+                date: yyyy + '/' + mm + '/' + dd,
+                text: text,
+                rating: "positive",
+                isHaraj: true
+            };
+
+            if (window.supabaseClient) {
+                const { error } = await supabaseClient
+                    .from('reviews')
+                    .insert([newReview]);
+                if (error) {
+                    console.error("Error inserting Haraj review:", error);
+                    alert("حدث خطأ أثناء الإضافة.");
+                    return;
+                }
+            } else {
+                alert("تعذر الاتصال بقاعدة البيانات.");
+                return;
+            }
+            
+            // Dispatch storage event to update index.html immediately if open
+            localStorage.setItem('site_reviews', Date.now().toString());
+            
             await loadReviews();
         }
 
