@@ -2516,7 +2516,7 @@
             const localReviewsList = reviews.filter(r => r.isHaraj === false);
 
             const toShowHaraj = harajReviews.slice(0, visibleCount);
-            if (harajGrid) harajGrid.innerHTML = toShowHaraj.map((r, i) => generateReviewHTML(r, i)).join('');
+            if (harajGrid) harajGrid.innerHTML = toShowHaraj.map((r, i) => generateReviewHTML(r, i, harajReviews.length)).join('');
 
             const loadMoreBtn = document.getElementById('load-more');
             if (loadMoreBtn) loadMoreBtn.style.display = visibleCount >= harajReviews.length ? 'none' : 'flex';
@@ -2525,7 +2525,7 @@
                 const localSection = document.getElementById('local-reviews');
                 const noReviewsMsg = document.getElementById('no-local-reviews-msg');
                 if (localReviewsList.length > 0) {
-                    localGrid.innerHTML = localReviewsList.map((r, i) => generateReviewHTML(r, i)).join('');
+                    localGrid.innerHTML = localReviewsList.map((r, i) => generateReviewHTML(r, i, localReviewsList.length)).join('');
                     if (noReviewsMsg) noReviewsMsg.style.display = 'none';
                 } else {
                     localGrid.innerHTML = '';
@@ -2534,7 +2534,7 @@
             }
         }
 
-        function generateReviewHTML(r, i) {
+        function generateReviewHTML(r, i, totalCount) {
             return `
             <div class="review-card" style="animation-delay: ${i * 0.05}s">
                 <div class="review-header">
@@ -2546,7 +2546,7 @@
                         </div>
                     </div>
                     <div style="display: flex; gap: 8px; align-items: center;">
-                        <div class="review-number" style="color: var(--text-secondary); font-size: 0.9rem; font-weight: bold; background: var(--bg-surface); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border);">#${i + 1}</div>
+                        <div class="review-number" style="color: var(--text-secondary); font-size: 0.9rem; font-weight: bold; background: var(--bg-surface); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border);">#${totalCount - i}</div>
                         <div class="review-badge">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
                             إيجابي
