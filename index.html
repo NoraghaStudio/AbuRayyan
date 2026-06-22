@@ -72,11 +72,11 @@
             <div class="account-cards-wrapper">
                 <div class="account-card">
                     <img src="images/حساب-حراج.jpeg" alt="حساب حراج">
-                    <a href="https://haraj.com.sa/@Aburayan777777?ref=o" class="cta-account" target="_blank">حسابي في حراج</a>
+                    <a href="https://haraj.com.sa/@Aburayan777777?ref=o" class="cta-account" target="_blank">لدخول حسابي في حراج اضغط هنا</a>
                 </div>
                 <div class="account-card">
                     <img src="images/حساب-مستعمل.jpeg" alt="حساب مستعمل">
-                    <a href="https://www.mstaml.com/sa/user/%D8%A7%20%D8%A8%D9%88%D8%B1%D9%8A%D8%A7%D9%86%20%D8%AE%D8%A8%D9%8A%D8%B1%20%D9%81%D8%AD%D8%B5%20%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA" class="cta-account" target="_blank">حسابي في مستعمل</a>
+                    <a href="https://www.mstaml.com/sa/user/%D8%A7%20%D8%A8%D9%88%D8%B1%D9%8A%D8%A7%D9%86%20%D8%AE%D8%A8%D9%8A%D8%B1%20%D9%81%D8%AD%D8%B5%20%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA" class="cta-account" style="background-color: #15b5a6;" target="_blank">لدخول حسابي في مستعمل اضغط هنا</a>
                 </div>
             </div>
 
@@ -283,7 +283,7 @@
                         <polyline points="15 3 21 3 21 9" />
                         <line x1="10" y1="14" x2="21" y2="3" />
                     </svg>
-                    شاهد أكثر من 400 تقييم على حسابنا في حراج
+                    اضغط هنا لمشاهدة أكثر من 400 تقييم في حراج
                 </a>
             </div>
 
@@ -305,16 +305,6 @@
         <div class="container">
             <div class="section-header">
                 <h2 id="local-reviews-title">تقييم عملائنا من خارج موقع حراج ومستعمل</h2>
-                <button onclick="openReviewModal()" class="cta-btn"
-                    style="margin-top: 16px; width: 100%; max-width: 350px; justify-content: center; font-size: 1.1rem; background: var(--bg-surface); color: var(--text-primary); border: 2px solid var(--gold); margin-left: auto; margin-right: auto; cursor: pointer;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"
-                        style="margin-left: 8px;">
-                        <polygon
-                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-                        </polygon>
-                    </svg>
-                    أضف تقييمك الآن
-                </button>
             </div>
             <div class="reviews-grid" id="local-reviews-grid">
                 <!-- Local reviews injected here -->
@@ -323,11 +313,21 @@
                 style="display: none; text-align: center; color: var(--text-secondary); padding: 2rem 0; background: var(--bg-surface); border-radius: 12px; border: 1px dashed var(--border);">
                 لا توجد تقييمات حالياً.. كُن أول من يقيّم خدمتنا!
             </div>
-            <button class="load-more-btn" id="load-more-local" onclick="loadMoreLocal()" style="display: none;">
+            <button class="load-more-btn" id="load-more-local" onclick="loadMoreLocal()" style="display: none; margin-bottom: 24px;">
                 عرض المزيد من التقييمات
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="6 9 12 15 18 9" />
                 </svg>
+            </button>
+            <button onclick="openReviewModal()" class="cta-btn"
+                style="margin-top: 16px; width: 100%; max-width: 350px; justify-content: center; font-size: 1.1rem; background: var(--bg-surface); color: var(--text-primary); border: 2px solid var(--gold); margin-left: auto; margin-right: auto; cursor: pointer; display: flex;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"
+                    style="margin-left: 8px;">
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                    </polygon>
+                </svg>
+                أضف تقييمك الآن
             </button>
         </div>
     </section>

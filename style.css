@@ -1104,26 +1104,27 @@ h1 {
 .account-card {
     display: flex;
     flex-direction: column;
-    background: #fff;
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
     width: 200px;
+    gap: 12px;
 }
 .account-card img {
     width: 100%;
     height: auto;
     display: block;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
 }
 .cta-account {
     background-color: #60a5fa; /* Light Blue */
     color: #fff;
     text-align: center;
     padding: 10px;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: bold;
     text-decoration: none;
     transition: var(--transition);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
 }
 .cta-account:hover {
     background-color: #3b82f6;
@@ -1144,12 +1145,12 @@ h1 {
 .payment-card {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 16px;
     flex-direction: row-reverse;
-    background: var(--bg-card);
+    background: transparent;
     padding: 16px 24px;
     border-radius: var(--radius);
-    border: 1px solid var(--border);
 }
 .payment-card img {
     height: 40px;
@@ -1165,4 +1166,17 @@ h1 {
 /* ==================== HARAJ REVIEWS ==================== */
 .review-card.haraj-card {
     background-color: #87ceeb !important;
+}
+
+#local-reviews-grid .review-card {
+    background-color: #e5e7eb;
+    border-color: #d1d5db;
+}
+#local-reviews-grid .review-card .reviewer-name,
+#local-reviews-grid .review-card .review-text {
+    color: #1f2937;
+}
+#local-reviews-grid .review-card .review-date,
+#local-reviews-grid .review-card .review-source {
+    color: #4b5563;
 }
