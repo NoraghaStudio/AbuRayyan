@@ -1092,3 +1092,77 @@ h1 {
 .gallery-swiper .swiper-slide img:hover {
     border-color: var(--gold);
 }
+
+/* ==================== ACCOUNT CARDS ==================== */
+.account-cards-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+.account-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    width: 200px;
+}
+.account-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+.cta-account {
+    background-color: #60a5fa; /* Light Blue */
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: var(--transition);
+}
+.cta-account:hover {
+    background-color: #3b82f6;
+}
+
+/* ==================== PAYMENT METHODS ==================== */
+.payment-section {
+    padding: 60px 0;
+    background: var(--bg-surface);
+}
+.payment-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+.payment-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    background: var(--bg-card);
+    padding: 16px 24px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+.payment-card img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+.payment-card span {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* ==================== HARAJ REVIEWS ==================== */
+.review-card.haraj-card {
+    background-color: #87ceeb !important;
+}
